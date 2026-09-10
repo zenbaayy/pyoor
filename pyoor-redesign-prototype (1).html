@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pyoor Body Essentials — Redesign Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FAF6EF;
+    --panel:#FFFFFF;
+    --ink:#362B22;
+    --ink-soft:#6B5E4F;
+    --brown:#8B5E3C;
+    --brown-dark:#5E3E27;
+    --brown-tint:#F1E6D8;
+    --blue:#9FC6D8;
+    --blue-dark:#4F7E93;
+    --blue-tint:#E7F1F5;
+    --line:#E6DECE;
+    --error:#B3573F;
+    --ok:#4C7A5C;
+    --radius:14px;
+    --radius-sm:8px;
+    --shadow:0 6px 24px rgba(94,62,39,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:'Karla',sans-serif;font-size:16px;line-height:1.5;}
+  h1,h2,h3,.serif{font-family:'Fraunces',serif;font-weight:500;color:var(--brown-dark);}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:'Karla',sans-serif;cursor:pointer;border:none;}
+  img{display:block;max-width:100%;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  /* Header */
+  header.site{position:sticky;top:0;z-index:50;background:var(--cream);border-bottom:1px solid var(--line);}
+  .topbar{background:var(--brown-dark);color:var(--blue-tint);font-size:13px;text-align:center;padding:7px 12px;letter-spacing:.02em;}
+  .navrow{display:flex;align-items:center;justify-content:space-between;padding:18px 0;}
+  .brand{font-family:'Fraunces',serif;font-style:italic;font-size:26px;color:var(--brown-dark);}
+  .brand span{font-style:normal;color:var(--blue-dark);}
+  nav.links{display:flex;gap:28px;font-size:15px;}
+  nav.links a{padding:6px 2px;border-bottom:2px solid transparent;}
+  nav.links a.active,nav.links a:hover{border-color:var(--blue-dark);color:var(--blue-dark);}
+  .navicons{display:flex;align-items:center;gap:18px;}
+  .icon-btn{position:relative;background:none;font-size:20px;color:var(--brown-dark);padding:4px;}
+  .badge{position:absolute;top:-6px;right:-8px;background:var(--blue-dark);color:#fff;font-size:10px;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+
+  /* Hero */
+  .hero{background:linear-gradient(120deg,var(--blue-tint) 0%,var(--cream) 60%);padding:64px 0 56px;}
+  .hero .wrap{display:flex;align-items:center;gap:48px;flex-wrap:wrap;}
+  .hero-copy{flex:1 1 380px;}
+  .hero-copy .eyebrow{color:var(--blue-dark);font-weight:600;letter-spacing:.04em;font-size:13px;}
+  .hero-copy h1{font-size:44px;line-height:1.1;margin:10px 0 16px;}
+  .hero-copy p{color:var(--ink-soft);max-width:440px;margin-bottom:26px;}
+  .hero-img{flex:1 1 320px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .hero-img img{height:340px;width:100%;object-fit:cover;}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;font-weight:600;font-size:14.5px;transition:transform .15s ease, background .2s ease;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--brown-dark);color:#fff;}
+  .btn-primary:hover{background:var(--brown);}
+  .btn-outline{background:transparent;border:1.5px solid var(--brown-dark);color:var(--brown-dark);}
+  .btn-outline:hover{background:var(--brown-dark);color:#fff;}
+  .btn-blue{background:var(--blue-dark);color:#fff;}
+  .btn-blue:hover{background:var(--blue);color:var(--brown-dark);}
+  .btn-sm{padding:9px 16px;font-size:13px;}
+  .btn-block{width:100%;justify-content:center;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  section{padding:52px 0;}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:8px;}
+  .section-head h2{font-size:28px;margin:0;}
+  .section-head p{color:var(--ink-soft);font-size:14px;}
+  .sort-row{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:18px;font-size:13.5px;color:var(--ink-soft);}
+  .sort-row select{padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;font-family:'Karla',sans-serif;font-size:13.5px;color:var(--ink);}
+  .sort-row select:focus{outline:2px solid var(--blue-dark);outline-offset:1px;}
+
+  /* Product grid */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  .card{background:var(--panel);border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);transition:box-shadow .2s ease;display:flex;flex-direction:column;}
+  .card:hover{box-shadow:var(--shadow);}
+  .card-media{position:relative;aspect-ratio:1/1;background:var(--brown-tint);overflow:hidden;cursor:pointer;}
+  .card-media img{width:100%;height:100%;object-fit:cover;}
+  .heart{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--brown-dark);box-shadow:0 2px 6px rgba(0,0,0,.12);}
+  .heart.active{color:#C4515A;}
+  .sold-tag{position:absolute;bottom:10px;left:10px;background:var(--ink);color:#fff;font-size:11px;padding:4px 9px;border-radius:6px;}
+  .card-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1;}
+  .card-body .pname{font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
+  .card-body .pname:hover{color:var(--blue-dark);}
+  .card-body .pprice{color:var(--brown-dark);font-weight:700;font-size:14.5px;}
+  .card-body .cat{font-size:11.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .card-foot{margin-top:auto;padding-top:8px;}
+
+  /* Product detail */
+  .pd{display:flex;gap:44px;flex-wrap:wrap;}
+  .pd-media{flex:1 1 400px;border-radius:var(--radius);overflow:hidden;background:var(--brown-tint);box-shadow:var(--shadow);}
+  .pd-media img{width:100%;aspect-ratio:1/1;object-fit:cover;}
+  .pd-info{flex:1 1 380px;}
+  .pd-info .cat{color:var(--blue-dark);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em;}
+  .pd-info h1{font-size:32px;margin:10px 0 6px;}
+  .pd-info .price{font-size:22px;color:var(--brown-dark);font-weight:700;margin-bottom:16px;}
+  .pd-info .desc{color:var(--ink-soft);margin-bottom:24px;max-width:480px;font-size:14.5px;line-height:1.65;}
+  .pd-info .desc strong{color:var(--ink);}
+  .pd-info .desc ul{margin:6px 0 12px;padding-left:20px;}
+  .pd-info .desc li{margin-bottom:3px;}
+  .pd-rating{font-size:13px;color:var(--brown);font-weight:600;margin-bottom:8px;}
+  .qty-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+  .qty-box{display:flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden;}
+  .qty-box button{background:var(--brown-tint);width:34px;height:34px;font-size:16px;color:var(--brown-dark);}
+  .qty-box span{width:34px;text-align:center;font-weight:600;}
+  .pd-actions{display:flex;gap:12px;flex-wrap:wrap;}
+  .pd-heart{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:600;color:var(--ink);}
+  .pd-heart.active{border-color:#C4515A;color:#C4515A;}
+
+  .empty-state{text-align:center;padding:70px 20px;color:var(--ink-soft);}
+  .empty-state .glyph{font-size:38px;margin-bottom:14px;}
+  .empty-state h3{color:var(--brown-dark);margin-bottom:8px;}
+
+  /* Wishlist / cart rows */
+  .row-list{display:flex;flex-direction:column;gap:14px;}
+  .row-item{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;}
+  .row-item img{width:72px;height:72px;border-radius:var(--radius-sm);object-fit:cover;background:var(--brown-tint);}
+  .row-item .ri-info{flex:1;min-width:120px;}
+  .row-item .ri-info .n{font-weight:600;cursor:pointer;}
+  .row-item .ri-info .n:hover{color:var(--blue-dark);}
+  .row-item .ri-info .p{color:var(--brown-dark);font-weight:700;font-size:14px;margin-top:2px;}
+  .row-item .ri-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .link-remove{color:var(--error);font-size:13px;font-weight:600;background:none;}
+
+  .cart-summary{background:var(--blue-tint);border-radius:var(--radius);padding:22px;margin-top:20px;max-width:360px;margin-left:auto;}
+  .cart-summary .line{display:flex;justify-content:space-between;margin-bottom:8px;font-size:14.5px;}
+  .cart-summary .total{font-weight:700;font-size:17px;border-top:1px solid rgba(79,126,147,.3);padding-top:10px;margin-top:10px;}
+
+  /* Checkout */
+  .checkout-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:36px;}
+  .co-box{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:20px;}
+  .co-box h3{font-size:16px;margin:0 0 14px;}
+  .pay-option{display:flex;align-items:flex-start;gap:12px;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:13px 14px;margin-bottom:10px;cursor:pointer;}
+  .pay-option.selected{border-color:var(--blue-dark);background:var(--blue-tint);}
+  .pay-option input{margin-top:3px;}
+  .pay-option .lbl{font-weight:600;font-size:14.5px;}
+  .pay-option .sub{color:var(--ink-soft);font-size:12.5px;margin-top:2px;}
+  .pay-detail{padding:14px 4px 4px 30px;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:12.5px;color:var(--ink-soft);margin-bottom:5px;}
+  .field input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Karla',sans-serif;font-size:14px;background:#fff;}
+  .field input:focus{outline:2px solid var(--blue-dark);outline-offset:1px;}
+  .field-row{display:flex;gap:12px;}
+  .field-row .field{flex:1;}
+  .bank-info{background:var(--brown-tint);border-radius:8px;padding:14px;font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+  .amount-toggle{display:flex;gap:10px;margin-bottom:14px;}
+  .amt-btn{flex:1;padding:13px;border-radius:var(--radius-sm);border:1.5px solid var(--line);background:#fff;text-align:left;}
+  .amt-btn.selected{border-color:var(--brown-dark);background:var(--brown-tint);}
+  .amt-btn .t{font-weight:700;font-size:14px;}
+  .amt-btn .s{font-size:12px;color:var(--ink-soft);}
+  .notice{font-size:12.5px;color:var(--ink-soft);background:var(--blue-tint);border-radius:8px;padding:10px 12px;margin-top:6px;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--brown-dark);color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;z-index:200;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+  /* Footer */
+  footer.site{background:var(--brown-dark);color:var(--blue-tint);margin-top:40px;}
+  .foot-top{padding:52px 0 30px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:32px;}
+  .foot-grid h4{color:#fff;font-family:'Fraunces',serif;font-weight:500;font-size:16px;margin:0 0 14px;}
+  .foot-grid p, .foot-grid a{color:#D9CBB8;font-size:13.5px;}
+  .foot-grid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+  .foot-grid a:hover{color:#fff;}
+  .foot-social{display:flex;gap:10px;margin-top:14px;}
+  .foot-social a{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .foot-social a:hover{background:var(--blue-dark);}
+  .news-row{display:flex;gap:8px;margin-top:10px;}
+  .news-row input{flex:1;padding:10px 12px;border-radius:999px;border:none;font-size:13px;}
+  .news-row button{background:var(--blue-dark);color:#fff;padding:10px 16px;border-radius:999px;font-weight:600;font-size:13px;}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding:16px 0;display:flex;justify-content:space-between;font-size:12.5px;color:#C9BAA4;flex-wrap:wrap;gap:8px;}
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  @media(max-width:900px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .checkout-grid{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    nav.links{display:none;}
+    .hero-copy h1{font-size:32px;}
+  }
+  @media(max-width:520px){
+    .grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+    .foot-grid{grid-template-columns:1fr;}
+    .field-row{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<header class="site">
+  <div class="topbar">Use code <strong>PYOOR</strong> at checkout · Free delivery on orders over Rs.2000</div>
+  <div class="wrap navrow">
+    <a class="brand" href="#" onclick="nav('home');return false;">Pyoor <span>Body Essentials</span></a>
+    <nav class="links">
+      <a href="#" onclick="nav('home');return false;" id="nav-home">Home</a>
+      <a href="#" onclick="nav('home');document.getElementById('shop').scrollIntoView({behavior:'smooth'});return false;">Shop</a>
+      <a href="#" onclick="nav('wishlist');return false;" id="nav-wishlist">Wishlist</a>
+    </nav>
+    <div class="navicons">
+      <button class="icon-btn" onclick="nav('wishlist')" aria-label="Wishlist">♡<span class="badge" id="wishBadge" style="display:none">0</span></button>
+      <button class="icon-btn" onclick="nav('cart')" aria-label="Cart">🛍<span class="badge" id="cartBadge" style="display:none">0</span></button>
+    </div>
+  </div>
+</header>
+
+<!-- HOME -->
+<div class="view active" id="view-home">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <div class="eyebrow">Buff &amp; Glow</div>
+        <h1>Radiant skin,<br>naturally yours.</h1>
+        <p>Body care crafted from clean, effective ingredients — made for glowing, healthy skin.</p>
+        <a href="#" class="btn btn-primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'});return false;">Shop all products</a>
+      </div>
+      <div class="hero-img"><img src="https://www.pyoorbodyessentials.com/cdn/shop/files/IMG_7987.jpg?v=1782979234&width=800" alt="Pyoor Body Essentials"></div>
+    </div>
+  </div>
+  <section class="wrap" id="shop">
+    <div class="section-head">
+      <h2>Featured products</h2>
+      <p id="prodCount"></p>
+    </div>
+    <div class="sort-row">
+      <label for="sortSelect">Sort by:</label>
+      <select id="sortSelect" onchange="setSort(this.value)">
+        <option value="featured">Featured</option>
+        <option value="relevant">Most relevant</option>
+        <option value="bestselling">Best selling</option>
+        <option value="az">Alphabetically, A-Z</option>
+        <option value="za">Alphabetically, Z-A</option>
+        <option value="price-asc">Price, low to high</option>
+        <option value="price-desc">Price, high to low</option>
+        <option value="date-old">Date, old to new</option>
+        <option value="date-new">Date, new to old</option>
+      </select>
+    </div>
+    <div class="grid" id="homeGrid"></div>
+  </section>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<div class="view" id="view-product">
+  <section class="wrap">
+    <div class="pd" id="pdWrap"></div>
+  </section>
+  <section class="wrap">
+    <div class="section-head"><h2>You May Also Like</h2></div>
+    <div class="grid" id="relatedGrid"></div>
+  </section>
+</div>
+
+<!-- WISHLIST -->
+<div class="view" id="view-wishlist">
+  <section class="wrap">
+    <div class="section-head"><h2>Your Wishlist</h2></div>
+    <div id="wishlistBody"></div>
+  </section>
+</div>
+
+<!-- CART -->
+<div class="view" id="view-cart">
+  <section class="wrap">
+    <div class="section-head"><h2>Your Cart</h2></div>
+    <div id="cartBody"></div>
+  </section>
+</div>
+
+<!-- CHECKOUT -->
+<div class="view" id="view-checkout">
+  <section class="wrap">
+    <div class="section-head"><h2>Checkout</h2></div>
+    <div class="checkout-grid">
+      <div>
+        <div class="co-box">
+          <h3>Shipping details</h3>
+          <div class="field-row">
+            <div class="field"><label>Full name</label><input type="text" placeholder="Your name"></div>
+            <div class="field"><label>Phone number</label><input type="text" placeholder="03xx-xxxxxxx"></div>
+          </div>
+          <div class="field"><label>Delivery address</label><input type="text" placeholder="House, street, city"></div>
+        </div>
+
+        <div class="co-box">
+          <h3>Payment amount</h3>
+          <div class="amount-toggle">
+            <button class="amt-btn selected" id="amtFullBtn" onclick="setAmountMode('full')">
+              <div class="t">Full payment</div><div class="s">Pay the complete order now</div>
+            </button>
+            <button class="amt-btn" id="amtHalfBtn" onclick="setAmountMode('half')">
+              <div class="t">50% advance</div><div class="s">Pay half now, rest on delivery</div>
+            </button>
+          </div>
+          <div class="notice">Advance-payment orders are confirmed once the 50% advance is received; the remaining balance follows the store's standard order policy.</div>
+        </div>
+
+        <div class="co-box">
+          <h3>Payment method</h3>
+          <label class="pay-option selected" id="opt-cod">
+            <input type="radio" name="pay" value="cod" checked onchange="setPayMethod('cod')">
+            <div><div class="lbl">Cash on Delivery</div><div class="sub">Pay in cash when your order arrives</div></div>
+          </label>
+          <label class="pay-option" id="opt-card">
+            <input type="radio" name="pay" value="card" onchange="setPayMethod('card')">
+            <div>
+              <div class="lbl">Card payment</div><div class="sub">Debit / credit card</div>
+              <div class="pay-detail" id="cardFields" style="display:none">
+                <div class="field"><label>Cardholder name</label><input type="text" placeholder="Name on card"></div>
+                <div class="field"><label>Card number</label><input type="text" placeholder="•••• •••• •••• ••••" inputmode="numeric"></div>
+                <div class="field-row">
+                  <div class="field"><label>Expiry date</label><input type="text" placeholder="MM/YY"></div>
+                  <div class="field"><label>CVV</label><input type="text" placeholder="•••" inputmode="numeric"></div>
+                </div>
+                <div class="notice">Card details are UI-only in this prototype — no real payment gateway is connected yet.</div>
+              </div>
+            </div>
+          </label>
+          <label class="pay-option" id="opt-bank">
+            <input type="radio" name="pay" value="bank" onchange="setPayMethod('bank')">
+            <div>
+              <div class="lbl">Bank transfer</div><div class="sub">Transfer directly to our account</div>
+              <div class="pay-detail" id="bankFields" style="display:none">
+                <div class="bank-info">
+                  Bank name: <em>[add bank name]</em><br>
+                  Account title: <em>[add account title]</em><br>
+                  Account / IBAN: <em>[add account number]</em><br>
+                  Please send your payment screenshot to confirm your order.
+                </div>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <div class="co-box">
+          <h3>Order summary</h3>
+          <div id="checkoutSummary"></div>
+          <button class="btn btn-primary btn-block" style="margin-top:16px" onclick="placeOrder()">Place order</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="site">
+  <div class="wrap foot-top">
+    <div class="foot-grid">
+      <div>
+        <h4>Pyoor Body Essentials</h4>
+        <p>Top-quality body care made with clean, effective ingredients — for skin that feels as good as it looks. Handcrafted and shipped across Pakistan.</p>
+        <div class="foot-social">
+          <a href="https://www.instagram.com/pyoorbodyessentials" aria-label="Instagram">IG</a>
+          <a href="https://www.tiktok.com/@pyoorbodyessentials" aria-label="TikTok">TT</a>
+        </div>
+      </div>
+      <div>
+        <h4>Quick links</h4>
+        <ul>
+          <li><a href="#" onclick="nav('home');return false;">Home</a></li>
+          <li><a href="#" onclick="nav('home');return false;">Shop</a></li>
+          <li><a href="#" onclick="nav('wishlist');return false;">Wishlist</a></li>
+          <li><a href="#" onclick="nav('cart');return false;">Cart</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Customer support</h4>
+        <ul>
+          <li><a href="#">Contact us</a></li>
+          <li><a href="#">Shipping information</a></li>
+          <li><a href="#">Return &amp; refund policy</a></li>
+          <li><a href="#">Privacy policy</a></li>
+          <li><a href="#">Terms &amp; conditions</a></li>
+          <li><a href="#">FAQs</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <p>Phone: <em>[add phone number]</em><br>
+        Email: <em>[add email address]</em><br>
+        Address: <em>[add store address]</em></p>
+        <h4 style="margin-top:18px">Newsletter</h4>
+        <form class="news-row" onsubmit="subscribeNews(event)">
+          <input type="email" placeholder="Your email" required>
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© 2026 Pyoor Body Essentials</span>
+    <span>Design prototype — for review only</span>
+  </div>
+</footer>
+
+<script>
+const products = [
+  {id:1,name:"Non-woven Wax Strip",price:200,cat:"Hair Removal",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/Non-wovenwaxstrip.jpg?v=1774442648&width=600",soldOut:true,
+    desc:"Non-woven wax strip."},
+  {id:2,name:"Organic Loofa",price:200,cat:"Bath & Body",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/OrganicLoofa.jpg?v=1774443898&width=600",
+    desc:"<strong>Plant Based Organic Loofa</strong><br><strong>Directions:</strong><ul><li>Dip in water for a while and squeeze all the water.</li><li>Start using in circular motions to exfoliate.</li></ul><strong>Purpose</strong><ul><li>Anti-bacterial, helps in exfoliation.</li></ul>"},
+  {id:3,name:"NO TAN (Brightening Bar)",price:700,cat:"Brightening",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/908A4184-4971-4DFA-AD0B-FEC16FDAAE0C.jpg?v=1777152302&width=600",rating:3.0,reviews:4,
+    desc:"NO TAN (kojic acid Bar)<br><strong>Key ingredients:</strong> glycerin, kojic acid, moisturizing soap noodles, fragrance, zinc oxide.<br><strong>Benefits:</strong><ul><li>Helps reduce tanning</li><li>Removes pigmentation</li><li>Evens out skin tone</li></ul><strong>Usage:</strong> use daily for best results."},
+  {id:4,name:"Zap it Bar",price:700,cat:"Hair Removal",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/DC388F4F-F50C-4473-B2D9-40229F4D2D31.jpg?v=1777209768&width=600",
+    desc:"Zap it (2% salicylic acid + arjun bark extract) soap<br><strong>What does it do?</strong><ul><li>Treats acne</li><li>Controls sebum</li><li>Unclogs pores</li><li>Oily/acne prone skin treatment</li></ul><strong>Key ingredients:</strong> 2% salicylic acid, soya glycerin, arjun bark extract, moisturising soap noodles.<br><strong>How to use:</strong> Use on face and body with luke warm water and make a rich lather, ensuring all parts are covered properly, leave for a few minutes and rinse. Use twice a day."},
+  {id:5,name:"Brightening Cream",price:1000,cat:"Brightening",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/48F4380A-0FCD-4AB5-915A-F73C486D5C97.jpg?v=1777152500&width=600",rating:4.6,reviews:5,
+    desc:"<strong>Body Brightening Cream</strong> — hand and feet brightening cream.<br><strong>Ingredients:</strong> Aqua, Glycerin, propylene glycol, caprylic triglycerides, Alpha Arbutin, 2% kojic acid dipalmitate, emulsifying wax, ceteareth-20, cetearyl alcohol, phenoxyethanol, vit. E, citric acid & fragrance.<br><strong>How to use?</strong> Apply a generous amount of body cream onto skin and leave overnight for best results.<br><strong>What does it do?</strong> Lightens skin tone, treats discoloration and keeps your skin moisturized."},
+  {id:6,name:"Cream Wax",price:1100,cat:"Hair Removal",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/CreamWax.png?v=1774443002&width=600",
+    desc:"<strong>Ingredients:</strong> Organic resins, crea alba, Glycerol, EDTA, Zinc Oxide, Fragrance.<br><strong>How to use:</strong> Warm wax slightly until smooth (not hot), apply a thin layer in the direction of hair, pull off quickly after placing strip in the opposite direction, put pressure on the waxed area, put some soothing aloe vera gel/oil."},
+  {id:7,name:"Rice Sugar Scrub",price:1350,cat:"Scrubs",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/39971E45-AF3D-417D-99CB-AB29F2667E04.jpg?v=1777152108&width=600",
+    desc:"Experience a gentle yet effective exfoliation with our Body Scrub | Rice. Enriched with natural rice extracts, this scrub removes dead skin cells, leaving your skin soft, smooth, and rejuvenated. Perfect for all skin types, it provides a healthy glow while maintaining your skin's natural moisture.<br><strong>Key Ingredients:</strong> Aqua, Glycerin, Shea butter, Rice bran oil, Juglans regia shell powder (walnut) shell, sodium lauryl sarcosinate, sodium lauryl sulphate, disodium EDTA, phenoxyethanol & perfume.<br><strong>How to Use?</strong><ul><li>Apply a generous amount to damp skin and gently massage in circular motions.</li><li>Focus on rough areas such as elbows and knees. Rinse thoroughly.</li><li>Use 2-3 times a week for best results.</li></ul><strong>Benefits:</strong><ul><li>Gently exfoliates dead skin cells for a radiant glow.</li><li>Treatment for chicken skin.</li><li>Improves skin texture and promotes softness.</li></ul>"},
+  {id:8,name:"Espresso Scrub",price:1350,cat:"Scrubs",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/62A5CEE9-337D-4B8C-B31B-4F76CB791721.jpg?v=1777152195&width=600",rating:5.0,reviews:5,
+    desc:"This 3 in 1 body scrub removes dead flakey skin, treats chest and back acne, leaves your skin extra smooth, and resolves the issue of ingrown hair and strawberry legs. Its intense exfoliating property makes your skin super clean and glowing.<br><strong>How to Use:</strong> Massage onto wet skin and rinse thoroughly (avoid using under running water).<br><strong>What does it do?</strong> Smooths and softens your skin as you gently buff away dead skin cells. Works great on cellulite.<br><strong>Ingredients:</strong> Aqua, Sugar, Glycerin, Shea butter, Coffee beans oil, juglans regia shell powder (walnut) shell, Sodium Lauryl sarcosinate, Sodium Lauryl sulphate, Disodium EDTA, Phenoxyethanol & Perfume."},
+  {id:9,name:"Purifying Face Cleanser",price:1400,cat:"Cleansers",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/EFDFD63F-4ACD-49DE-B36D-C4CAF628B031.png?v=1777152458&width=600",
+    desc:"<strong>Purifying Cleanser with Vitamin B3.</strong> Gently cleanse and refresh your skin. It removes impurities, unclogs pores, and helps brighten your dull skin tone — all without stripping natural skin moisture. Perfect for daily use, leaving skin soft, oil free.<br><strong>Ingredients:</strong> Water, Glycerin, Myristic Acid, Propylene Glycol, Potassium Hydroxide, Stearic Acid, Glycol Distearate, Lauric Acid, Palmitic Acid, Niacinamide, kojic acid, Sodium Methyl Cocoyl Taurate, Cocamidopropyl Betaine, Polyethylene, Acrylates Copolymer, Fragrance, Sodium Chloride, Disodium EDTA, Phenoxyethanol."},
+  {id:10,name:"Dragon Fruit",price:1550,cat:"Scrubs",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/DragonFruit.jpg?v=1774443500&width=600",
+    desc:"3 in 1 body scrub to remove dead and tanned skin, leaves your skin extra smooth, resolves the issue of ingrown hair and strawberry legs. Its deep breezy effect keeps your body cool and hydrated in summer heat.<br><strong>How to Use:</strong> Massage onto wet skin and rinse thoroughly.<br><strong>What does it do?</strong> Smooth and soften your skin as you gently buff away dead skin cells, with the cooling effect of menthol.<br><strong>Ingredients:</strong> Aqua, Glycerin, Shea butter, Vit E granules, juglans regia shell powder (walnut) shell, Sodium Lauryl sarcosinate, Sodium Lauryl sulphate, Disodium EDTA, Phenoxyethanol & Perfume and menthol."},
+  {id:11,name:"1% SA BodyWash",price:1580,cat:"Cleansers",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/2FD8AA6A-DE79-41CC-928F-BFE44D63BFEE.jpg?v=1777192395&width=600",
+    desc:"<strong>What does it do?</strong><ul><li>Treats body acne</li><li>Controls sebum production</li><li>Exfoliates rough and bumpy skin</li><li>Increases cell turnover</li><li>Hydrates and clears clogged pores</li></ul><strong>Ingredients:</strong> Water (Aqua), Cocamidopropyl Betaine, Sodium Methyl Lauroyl Taurate, Glycerin, salicylic acid 1%, Sodium Chloride, Stearic Acid, Palmitic Acid, Hydroxystearic Acid, Glyceryl Stearate, Fragrance (Parfum), Cocamide MEA, Sodium Benzoate, Sodium Gluconate, Citric Acid, Geraniol, Hexyl Cinnamal, Limonene, Linalool.<br><strong>How to Use:</strong> Massage over wet skin covering areas that are prone to acne, create a rich foam, leave for a few minutes and rinse. Use daily for best results."},
+  {id:12,name:"Intimate Radiance Cream",price:1650,cat:"Brightening",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/IMG-7923.jpg?v=1782654086&width=600",
+    desc:"<strong>DEEP SLEEP RADIANCE:</strong> Intimate brightening cream — ~3% kojic acid DiP, ~5% Niacinamide, ~1% Alpha Arbutin.<br><strong>Addresses:</strong><ul><li>Under-arm hyperpigmentation</li><li>Intimate lightening / inhibiting tyrosinase enzyme for further melanin production</li><li>Lightens dark spots</li><li>Bright, texture-free / smooth skin in days</li></ul><strong>Ingredients:</strong> Aqua, Glycerin, Niacinamide, Kojic Acid Dipalmitate, Stearyl Ether, Dimethicone, Stearic Acid, Paraffinum Liquid, Isopropyl Myristate, Cetearyl Alcohol, Ceteareth-20, Dimethyl Isosorbide, Cyclopentasiloxane, Alpha Arbutin, Propylene Glycol, Xanthan Gum, Carbomer, Zinc Oxide, Tocopherol, Ethylhexylglycerin, Phenoxyethanol, Triethanolamine, mineral oil and fragrance.<br><strong>Usage:</strong> Use daily at night on cleansed, dry surface. Use the proper amount and massage onto skin until fully absorbed.<br><strong>Cautions:</strong><ul><li>Do not bleach intimate area</li><li>Do not use chemical exfoliators</li><li>Do not use chemical hair removing creams/sprays</li><li>Do not wear tight clothes</li><li>Keep your armpit area dry/sweat free as much as possible</li><li>Wear light, breathable cotton undies</li></ul>"},
+  {id:13,name:"Blueberry Sugar Scrub",price:1750,cat:"Scrubs",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/BF391A85-12E7-49C7-8C24-871D7565A975.jpg?v=1777655153&width=600",
+    desc:"Blueberry sugar scrub exfoliates, detoxes and smoothens the skin surface.<br><strong>Key ingredients:</strong> Salicylic acid, Tea tree oil, Niacinamide.<br><strong>Ingredients:</strong> Aqua, Glycerin, Shea butter, blueberry extract, juglans regia shell powder (walnut), lauryl sarcosinate, sodium lauryl sulphate, disodium EDTA, phenoxyethanol and perfume.<br><strong>Benefits:</strong><ul><li>Treats bacne</li><li>Keratosis pilaris</li><li>Dissolves clogged pores</li><li>Treatment for inflamed skin</li></ul><strong>Usage:</strong> Massage onto wet skin (not under running water), exfoliate for about 3-5 minutes and rinse."},
+  {id:14,name:"Cucumber Melon Scrub",price:1750,cat:"Scrubs",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/BA8510DE-DFA5-455A-86B8-566FAF353292.jpg?v=1777655970&width=600",
+    desc:"Cucumber melon sugar scrub provides hydration and exfoliation and instant brighter skin.<br><strong>Key ingredients:</strong> Plant based Squalene, Lactic Acid, Vit B3.<br><strong>Ingredients:</strong> Aqua, Glycerin, Shea butter, Grape seed oil, cucumber powder, lauryl sarcosinate, emulsifying wax, p-wax, Propylene Glycol, Xanthan Gum, sodium lauryl sulphate, disodium EDTA, phenoxyethanol and sweet fragrance.<br><strong>Benefits:</strong><ul><li>Provides deep hydration</li><li>Treats keratosis pilaris / chicken skin</li><li>Increases skin cell turnover / exfoliation</li></ul><strong>Usage:</strong> Massage onto wet skin (do not use under running water/shower), apply properly onto skin and gently massage, give your skin a good scrub, leave for about 2 minutes and rinse. Use twice or thrice a week for best results."},
+  {id:15,name:"NO TAN Scrub",price:1850,cat:"Brightening",img:"https://www.pyoorbodyessentials.com/cdn/shop/files/IMG-7740.jpg?v=1782003738&width=600",
+    desc:"Quantity: 400g<br><strong>Dual exfoliation</strong> removes tanning & dead skin buildup, provides glow, targets hyperpigmentation, rejuvenates skin/boosts glow.<br><strong>How to Use:</strong> Apply on damp skin directly or activate in damp hands, massage onto skin for 2-3 minutes, rinse off and lock in body moisture with a hydrating body lotion.<br><strong>Ingredients:</strong> Sugar, vegetable Glycerin, SCI, Disodium Lauryl Sulfosuccinate, Sodium Chloride, Shea Butter, Jojoba Oil, Curcumin (kasturi turmeric) Extract, Glycolic Acid (5%), Pola wax, E wax, Cocamidopropyl Betaine, vitamin E, sandalwood, EDTA & Perfume.<br><strong>Storage:</strong> Keep away from water, direct sunlight, and heat."}
+];
+
+let wishlist = JSON.parse(localStorage.getItem('pyoor_wishlist') || '[]');
+let cart = JSON.parse(localStorage.getItem('pyoor_cart') || '[]');
+let currentProductId = null;
+let payMethod = 'cod';
+let amountMode = 'full';
+
+function save(){
+  localStorage.setItem('pyoor_wishlist', JSON.stringify(wishlist));
+  localStorage.setItem('pyoor_cart', JSON.stringify(cart));
+}
+function fmt(n){ return 'Rs.' + n.toLocaleString(); }
+function findProduct(id){ return products.find(p=>p.id===id); }
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+function toggleWishlist(id, ev){
+  if(ev) ev.stopPropagation();
+  const i = wishlist.indexOf(id);
+  if(i>-1){ wishlist.splice(i,1); toast('Removed from wishlist'); }
+  else { wishlist.push(id); toast('Added to wishlist'); }
+  save(); renderAll();
+}
+
+function addToCart(id, qty, ev){
+  if(ev) ev.stopPropagation();
+  qty = qty || 1;
+  const p = findProduct(id);
+  if(p.soldOut){ toast('This product is sold out'); return; }
+  const line = cart.find(c=>c.id===id);
+  if(line) line.qty += qty; else cart.push({id, qty});
+  save(); renderAll();
+  toast('Added to cart');
+}
+function removeFromCart(id){
+  cart = cart.filter(c=>c.id!==id);
+  save(); renderAll();
+}
+function changeQty(id, delta){
+  const line = cart.find(c=>c.id===id);
+  if(!line) return;
+  line.qty += delta;
+  if(line.qty<=0){ removeFromCart(id); return; }
+  save(); renderAll();
+}
+
+function cartTotal(){
+  return cart.reduce((sum,c)=>{ const p=findProduct(c.id); return sum + (p?p.price*c.qty:0); },0);
+}
+
+function productCard(p){
+  const isWish = wishlist.includes(p.id);
+  return `
+  <div class="card">
+    <div class="card-media" onclick="openProduct(${p.id})">
+      <img src="${p.img}" alt="${p.name}">
+      <button class="heart ${isWish?'active':''}" onclick="toggleWishlist(${p.id}, event)" aria-label="Toggle wishlist">${isWish?'♥':'♡'}</button>
+      ${p.soldOut?'<span class="sold-tag">Sold out</span>':''}
+    </div>
+    <div class="card-body">
+      <div class="cat">${p.cat}</div>
+      <div class="pname" onclick="openProduct(${p.id})">${p.name}</div>
+      <div class="pprice">${fmt(p.price)}</div>
+      <div class="card-foot">
+        <button class="btn btn-blue btn-sm btn-block" ${p.soldOut?'disabled':''} onclick="addToCart(${p.id},1,event)">${p.soldOut?'Sold out':'Add to cart'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+let currentSort = 'featured';
+function setSort(val){ currentSort = val; renderHomeGrid(); }
+
+function sortedProducts(){
+  const list = products.slice();
+  switch(currentSort){
+    case 'az': list.sort((a,b)=>a.name.localeCompare(b.name)); break;
+    case 'za': list.sort((a,b)=>b.name.localeCompare(a.name)); break;
+    case 'price-asc': list.sort((a,b)=>a.price-b.price); break;
+    case 'price-desc': list.sort((a,b)=>b.price-a.price); break;
+    case 'date-old': list.sort((a,b)=>a.id-b.id); break;
+    case 'date-new': list.sort((a,b)=>b.id-a.id); break;
+    case 'bestselling': list.sort((a,b)=>(b.reviews||0)-(a.reviews||0)); break;
+    case 'relevant':
+    case 'featured':
+    default: break; // store's default/featured order
+  }
+  return list;
+}
+
+function renderHomeGrid(){
+  const list = sortedProducts();
+  document.getElementById('homeGrid').innerHTML = list.map(productCard).join('');
+  document.getElementById('prodCount').textContent = products.length + ' products';
+}
+
+function openProduct(id){
+  currentProductId = id;
+  nav('product');
+}
+
+function renderProduct(){
+  const p = findProduct(currentProductId);
+  if(!p){ document.getElementById('pdWrap').innerHTML=''; return; }
+  const isWish = wishlist.includes(p.id);
+  const ratingHtml = p.rating ? `<div class="pd-rating">${p.rating.toFixed(1)} / 5.0 · ${p.reviews} review${p.reviews===1?'':'s'}</div>` : '';
+  document.getElementById('pdWrap').innerHTML = `
+    <div class="pd-media"><img src="${p.img}" alt="${p.name}"></div>
+    <div class="pd-info">
+      <div class="cat">${p.cat}</div>
+      <h1>${p.name}</h1>
+      ${ratingHtml}
+      <div class="price">${fmt(p.price)}</div>
+      <div class="desc">${p.desc || ''}</div>
+      <div class="qty-row">
+        <div class="qty-box">
+          <button onclick="pdQty(-1)">–</button><span id="pdQtyVal">1</span><button onclick="pdQty(1)">+</button>
+        </div>
+      </div>
+      <div class="pd-actions">
+        <button class="btn btn-blue" ${p.soldOut?'disabled':''} onclick="addToCart(${p.id}, window.pdQtyN||1)">${p.soldOut?'Sold out':'Add to cart'}</button>
+        <button class="pd-heart ${isWish?'active':''}" onclick="toggleWishlist(${p.id})">${isWish?'♥ In wishlist':'♡ Add to wishlist'}</button>
+      </div>
+    </div>`;
+  window.pdQtyN = 1;
+  document.getElementById('relatedGrid').innerHTML = products
+    .filter(x=>x.cat===p.cat && x.id!==p.id)
+    .concat(products.filter(x=>x.cat!==p.cat && x.id!==p.id))
+    .slice(0,4)
+    .map(productCard).join('');
+}
+function pdQty(delta){
+  window.pdQtyN = Math.max(1, (window.pdQtyN||1)+delta);
+  document.getElementById('pdQtyVal').textContent = window.pdQtyN;
+}
+
+function renderWishlist(){
+  const box = document.getElementById('wishlistBody');
+  if(wishlist.length===0){
+    box.innerHTML = `<div class="empty-state"><div class="glyph">♡</div><h3>Your wishlist is empty</h3><p>Tap the heart on any product to save it here.</p><a class="btn btn-outline" style="margin-top:14px" href="#" onclick="nav('home');return false;">Browse products</a></div>`;
+    return;
+  }
+  box.innerHTML = `<div class="row-list">` + wishlist.map(id=>{
+    const p = findProduct(id); if(!p) return '';
+    return `<div class="row-item">
+      <img src="${p.img}" alt="${p.name}">
+      <div class="ri-info">
+        <div class="n" onclick="openProduct(${p.id})">${p.name}</div>
+        <div class="p">${fmt(p.price)}</div>
+      </div>
+      <div class="ri-actions">
+        <button class="btn btn-blue btn-sm" ${p.soldOut?'disabled':''} onclick="addToCart(${p.id},1)">Add to cart</button>
+        <button class="link-remove" onclick="toggleWishlist(${p.id})">Remove</button>
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+function renderCart(){
+  const box = document.getElementById('cartBody');
+  if(cart.length===0){
+    box.innerHTML = `<div class="empty-state"><div class="glyph">🛍</div><h3>Your cart is empty</h3><p>Add something you'll love.</p><a class="btn btn-outline" style="margin-top:14px" href="#" onclick="nav('home');return false;">Browse products</a></div>`;
+    return;
+  }
+  const rows = cart.map(c=>{
+    const p = findProduct(c.id); if(!p) return '';
+    return `<div class="row-item">
+      <img src="${p.img}" alt="${p.name}">
+      <div class="ri-info">
+        <div class="n" onclick="openProduct(${p.id})">${p.name}</div>
+        <div class="p">${fmt(p.price)}</div>
+      </div>
+      <div class="ri-actions">
+        <div class="qty-box"><button onclick="changeQty(${p.id},-1)">–</button><span>${c.qty}</span><button onclick="changeQty(${p.id},1)">+</button></div>
+        <button class="link-remove" onclick="removeFromCart(${p.id})">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+  const total = cartTotal();
+  box.innerHTML = `<div class="row-list">${rows}</div>
+    <div class="cart-summary">
+      <div class="line"><span>Subtotal</span><span>${fmt(total)}</span></div>
+      <div class="line" style="color:var(--ink-soft)"><span>Shipping</span><span>Calculated at checkout</span></div>
+      <div class="line total"><span>Estimated total</span><span>${fmt(total)}</span></div>
+      <button class="btn btn-primary btn-block" style="margin-top:14px" onclick="nav('checkout')">Proceed to checkout</button>
+    </div>`;
+}
+
+function setPayMethod(m){
+  payMethod = m;
+  ['cod','card','bank'].forEach(k=>{
+    document.getElementById('opt-'+k).classList.toggle('selected', k===m);
+  });
+  document.getElementById('cardFields').style.display = m==='card' ? 'block' : 'none';
+  document.getElementById('bankFields').style.display = m==='bank' ? 'block' : 'none';
+}
+function setAmountMode(mode){
+  amountMode = mode;
+  document.getElementById('amtFullBtn').classList.toggle('selected', mode==='full');
+  document.getElementById('amtHalfBtn').classList.toggle('selected', mode==='half');
+  renderCheckoutSummary();
+}
+function renderCheckoutSummary(){
+  const total = cartTotal();
+  const due = amountMode==='full' ? total : Math.round(total/2);
+  const remaining = total - due;
+  document.getElementById('checkoutSummary').innerHTML = `
+    <div class="line"><span>Order subtotal</span><span>${fmt(total)}</span></div>
+    ${amountMode==='half' ? `<div class="line"><span>Remaining on delivery</span><span>${fmt(remaining)}</span></div>` : ''}
+    <div class="line total"><span>Due now</span><span>${fmt(due)}</span></div>`;
+}
+function placeOrder(){
+  if(cart.length===0){ toast('Your cart is empty'); return; }
+  toast('Order details captured — no real payment was processed (prototype)');
+}
+
+function updateBadges(){
+  const wb = document.getElementById('wishBadge');
+  const cb = document.getElementById('cartBadge');
+  wb.style.display = wishlist.length ? 'flex' : 'none'; wb.textContent = wishlist.length;
+  const cCount = cart.reduce((s,c)=>s+c.qty,0);
+  cb.style.display = cCount ? 'flex' : 'none'; cb.textContent = cCount;
+}
+
+function subscribeNews(ev){
+  ev.preventDefault();
+  toast('Subscribed! (demo only)');
+  ev.target.reset();
+}
+
+function nav(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(view==='product') renderProduct();
+  if(view==='checkout') renderCheckoutSummary();
+  document.getElementById('nav-home').classList.toggle('active', view==='home');
+  document.getElementById('nav-wishlist').classList.toggle('active', view==='wishlist');
+}
+
+function renderAll(){
+  renderHomeGrid();
+  renderWishlist();
+  renderCart();
+  updateBadges();
+  if(document.getElementById('view-product').classList.contains('active')) renderProduct();
+  if(document.getElementById('view-checkout').classList.contains('active')) renderCheckoutSummary();
+}
+
+renderAll();
+</script>
+</body>
+</html>
